@@ -1,26 +1,110 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-pink: #f2c9b8;
+  --color-cream: #fdf9ed;
+  --color-leaf: #30711d;
+  --color-forest: #1c3f12;
+  --color-sand: #e9dcc0;
+  --font-sans: var(--font-bricolage);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-cream);
+  color: var(--color-forest);
+}
+
+.font-display {
+  font-variation-settings: "wdth" 75;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+}
+
+/* ---------- Motion ---------- */
+@keyframes rise {
+  from { transform: translateY(110%); }
+  to { transform: translateY(0); }
+}
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes arch-in {
+  from { clip-path: inset(100% 0 0 0 round 999px 999px 8px 8px); }
+  to { clip-path: inset(0 0 0 0 round 999px 999px 8px 8px); }
+}
+@keyframes zoom-out {
+  from { transform: scale(1.18); }
+  to { transform: scale(1); }
+}
+@keyframes pop {
+  0% { opacity: 0; transform: scale(0.6) rotate(-8deg); }
+  70% { opacity: 1; transform: scale(1.05) rotate(2deg); }
+  100% { opacity: 1; transform: scale(1) rotate(0); }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes draw { to { stroke-dashoffset: 0; } }
+@keyframes marquee { to { transform: translateX(-50%); } }
+@keyframes pulse-dot {
+  0% { box-shadow: 0 0 0 0 rgb(48 113 29 / 0.5); }
+  100% { box-shadow: 0 0 0 10px rgb(48 113 29 / 0); }
+}
+
+.line-mask { display: block; overflow: hidden; padding-bottom: 0.06em; }
+.line-mask > span { display: inline-block; animation: rise 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+.fade-up { animation: fade-up 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+.arch-in { animation: arch-in 1.2s cubic-bezier(0.7, 0, 0.2, 1) both; }
+.zoom-out { animation: zoom-out 1.8s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+.pop { animation: pop 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+.float { animation: float 6s ease-in-out infinite; }
+.spin-slow { animation: spin 18s linear infinite; }
+.draw { stroke-dasharray: 400; stroke-dashoffset: 400; animation: draw 0.8s ease-out 0.5s forwards; }
+.marquee { animation: marquee 30s linear infinite; }
+.pulse-dot { animation: pulse-dot 1.6s ease-out infinite; }
+.wordmark-letter { display: inline-block; animation: rise 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    animation-delay: 0ms !important;
+  }
+  .draw { stroke-dashoffset: 0; }
+}
+
+/* ---------- Intro + hero motion ---------- */
+:root { --intro: 0s; }
+#top { --mx: 0; --my: 0; --sy: 0; }
+
+@keyframes drift {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(30px, -40px) scale(1.12); }
+}
+@keyframes fade-down {
+  from { opacity: 0; transform: translateY(-16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.drift { animation: drift 14s ease-in-out infinite; }
+
+/* Mouse / scroll parallax — uses the independent `translate` property so it
+   never fights the transform-based entrance animations. */
+.px { transition: translate 0.7s cubic-bezier(0.2, 0.8, 0.2, 1); will-change: translate; }
+.px-arch  { translate: calc(var(--mx) * -10px) calc(var(--my) * -10px + var(--sy) * 0.04px); }
+.px-badge { translate: calc(var(--mx) * 22px)  calc(var(--my) * 22px  + var(--sy) * 0.1px); }
+.px-pour  { translate: calc(var(--mx) * -30px) calc(var(--my) * -26px - var(--sy) * 0.05px); }
+.px-word  { translate: 0 calc(var(--sy) * -0.07px); }
+
+.draw { animation-delay: calc(var(--intro) + 0.5s); }
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --intro: 0s; }
+  .px { translate: none !important; }
 }
